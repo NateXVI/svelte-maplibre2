@@ -66,6 +66,9 @@
   } = $props();
 
   const ctx = createMapContext();
+  $effect(() => {
+    map = ctx.map;
+  });
   let container = $state<HTMLElement>();
 
   function initMap() {
@@ -88,12 +91,9 @@
         antialias,
         zoomOnDoubleClick,
         attributionControl,
-        cooperativeGestures
+        cooperativeGestures,
       })
     );
-    map = ctx.map;
-
-    loaded = ctx.map.loaded();
 
     ctx.map.on('load', () => {
       loaded = true;

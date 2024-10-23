@@ -1,3 +1,32 @@
-<h1>Welcome to your library project</h1>
-<p>Create your package using @sveltejs/package and preview/showcase your work with SvelteKit</p>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+  import MapLibre from '$lib/MapLibre.svelte';
+
+  let show = $state(true);
+  let loaded = $state(false);
+  let map = $state<maplibregl.Map | null>(null);
+
+  $inspect(loaded, map);
+</script>
+
+<svelte:window
+  onkeypress={(e) => {
+    if (e.key === 's') {
+      show = !show;
+    }
+  }}
+/>
+
+{#if show}
+  <MapLibre
+    class="h-screen w-full"
+    style="https://tiles.openfreemap.org/styles/bright"
+    bind:loaded
+    bind:map
+    cooperativeGestures
+  />
+  <MapLibre
+    class="h-screen w-full"
+    style="https://tiles.openfreemap.org/styles/bright"
+    cooperativeGestures
+  />
+{/if}

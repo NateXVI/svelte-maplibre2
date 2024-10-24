@@ -33,6 +33,8 @@
     if (ctx.map?.isStyleLoaded() && control) {
       ctx.map.removeControl(control);
     }
+    // cancel the init callback so multiple calls don't stack up
+    ctx.map?.off('load', init);
   };
 
   $effect(() => {
@@ -44,11 +46,6 @@
         ctx.map.once('load', init);
       }
     }
-
-    return () => {
-      // cancel the init callback so multiple calls don't stack up
-      ctx.map?.off('load', init);
-    };
   });
 
   onDestroy(cleanup);

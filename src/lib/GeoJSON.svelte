@@ -41,6 +41,7 @@
   let source = createSourceContext(id);
   let sourceObj = $state<GeoJSONSource>();
   let first = $state(true);
+  let created = $state(false);
 
   $effect(() => {
     ctx.cluster = cluster;
@@ -76,6 +77,7 @@
           first = true;
         }
       );
+      created = true;
     }
   }
 
@@ -101,10 +103,11 @@
     if (source && sourceObj && ctx.map) {
       removeSource(ctx.map, source.id, sourceObj);
     }
+    created = false;
   });
 </script>
 
-{#if source}
+{#if created}
   {#key source.id}
     {@render children?.()}
   {/key}

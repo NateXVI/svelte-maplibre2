@@ -27,8 +27,8 @@
     antialias,
     zoomOnDoubleClick = true,
     attributionControl,
+    filterLayers,
     cooperativeGestures = false,
-
     standardControls = false,
     ...rest
   }: {
@@ -60,7 +60,8 @@
     attributionControl?: false | maplibregl.AttributionControlOptions;
     /** Set true to require hitting ⌘/Ctrl while scrolling to zoom. Or use two fingers on phones. */
     cooperativeGestures?: boolean;
-
+    /** Filter the map's builtin layers, hiding any for which this function returns false. */
+    filterLayers?: (layer: maplibregl.LayerSpecification) => boolean;
     standardControls?: boolean | maplibregl.ControlPosition;
     class?: string;
   } = $props();
@@ -97,6 +98,17 @@
 
     ctx.map.on('load', () => {
       loaded = true;
+    });
+
+    ctx.map.on('styledata', () => {
+      if (ctx.map && filterLayers) {
+        const layers = ctx.map.getStyle().layers;
+        for (const layer of layers) {
+          if (!filterLayers(layer)) {
+            ctx.map.setLayoutProperty(layer.id, 'visibility', 'none');
+          }
+        }
+      }
     });
   }
 

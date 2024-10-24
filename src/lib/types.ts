@@ -1,4 +1,5 @@
-import type { ExpressionSpecification } from 'maplibre-gl';
+import type { ExpressionSpecification, MapMouseEvent } from 'maplibre-gl';
+import type { Feature } from 'geojson';
 
 export interface ClusterOptions {
   /** The minimum number of points required to form a cluster.
@@ -28,4 +29,13 @@ export interface ClusterOptions {
   /** Aggregations to peform on the cluster points.
    * This can not be changed after the source is created. */
   properties?: Record<string, maplibregl.ExpressionSpecification>;
+}
+
+export interface LayerClickInfo {
+  map: maplibregl.Map;
+  event: MapMouseEvent;
+  clusterId: string | undefined;
+  layer: string;
+  source: string;
+  features: Feature[];
 }

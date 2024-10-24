@@ -1,6 +1,7 @@
-import maplibregl from 'maplibre-gl';
+import { type Map, type MapMouseEvent } from 'maplibre-gl';
 import { getContext, onDestroy, setContext } from 'svelte';
 import type { ClusterOptions } from './types.js';
+import { SvelteMap } from 'svelte/reactivity';
 
 // Choose current time instead of 0 to avoid possible reuse during HMR.
 let nextId = Date.now();
@@ -16,11 +17,13 @@ export interface LayerInfo {
 }
 
 export class MapContext {
-  map = $state<maplibregl.Map | null>(null);
+  map = $state<Map | null>(null);
   cluster = $state<ClusterOptions | undefined>();
-
   minzoom = $state<number>(0);
   maxzoom = $state<number>(24);
+
+  layerTracker = $state<WeakMap<Event, string | undefined>>(new WeakMap());
+  layerInfo = $state<SvelteMap<string, LayerInfo>>(new SvelteMap());
 
   constructor() {
     onDestroy(() => {
@@ -28,6 +31,20 @@ export class MapContext {
         this.map.remove();
       }
     });
+  }
+
+  eventTopMost(event: MapMouseEvent): string {
+    let id = this.layerTracker.get(event.originalEvent);
+    if (id !== undefined) {
+      return id;
+    }
+
+    let features = event.target.queryRenderedFeatures(event.point);
+    let topId = features.find((f) => this.layerInfo.get(f.layer.id)?.interactive)?.layer.id;
+
+    this.layerTracker.set(event.originalEvent, topId);
+
+    return topId ?? '';
   }
 }
 

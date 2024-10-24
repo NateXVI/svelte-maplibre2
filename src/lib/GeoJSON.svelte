@@ -67,12 +67,12 @@
           buffer,
           tolerance,
         }),
-        (sourceId: string) => !!ctx.map && sourceId === source,
+        (sourceId: string) => !!ctx.map && sourceId === source.id,
         () => {
           if (!source) {
             return;
           }
-          sourceObj = ctx.map?.getSource(source) as GeoJSONSource;
+          sourceObj = ctx.map?.getSource(source.id) as GeoJSONSource;
           first = true;
         }
       );
@@ -99,13 +99,13 @@
 
   onDestroy(() => {
     if (source && sourceObj && ctx.map) {
-      removeSource(ctx.map, source, sourceObj);
+      removeSource(ctx.map, source.id, sourceObj);
     }
   });
 </script>
 
 {#if source}
-  {#key source}
+  {#key source.id}
     {@render children?.()}
   {/key}
 {/if}

@@ -19,6 +19,9 @@ export class MapContext {
   map = $state<maplibregl.Map | null>(null);
   cluster = $state<ClusterOptions | undefined>();
 
+  minzoom = $state<number>(0);
+  maxzoom = $state<number>(24);
+
   constructor() {
     onDestroy(() => {
       if (this.map) {
@@ -46,13 +49,35 @@ export function createMapContext(): MapContext {
 const SOURCE_CONTEXT_KEY = Symbol.for('svelte-maplibre2-source');
 
 export class SourceContext {
-  id: string | undefined = $state();
+  id: string = $state('');
+
+  constructor(id: string) {
+    this.id = id;
+  }
 }
 
-export function sourceContext(): string | undefined {
+export function createSourceContext(id: string): SourceContext {
+  return setContext(SOURCE_CONTEXT_KEY, new SourceContext(id));
+}
+
+export function sourceContext(): SourceContext | undefined {
   return getContext(SOURCE_CONTEXT_KEY);
 }
 
-export function createSourceContext(id: string): string {
-  return setContext(SOURCE_CONTEXT_KEY, id);
+const LAYER_CONTEXT_KEY = Symbol.for('svelte-maplibre2-layer');
+
+export class LayerContext {
+  id: string = $state('');
+
+  constructor(id: string) {
+    this.id = id;
+  }
+}
+
+export function createLayerContext(id: string): LayerContext {
+  return setContext(LAYER_CONTEXT_KEY, new LayerContext(id));
+}
+
+export function layerContext(): LayerContext | undefined {
+  return getContext(LAYER_CONTEXT_KEY);
 }

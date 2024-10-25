@@ -1,6 +1,6 @@
 {
   "name": "svelte-maplibre2",
-  "version": "0.0.1",
+  "version": "0.0.1-dev.0",
   "license": "MIT",
   "scripts": {
     "dev": "vite dev",
@@ -30,7 +30,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js"
+      "svelte": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "peerDependencies": {

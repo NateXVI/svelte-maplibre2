@@ -1,7 +1,11 @@
 {
   "name": "svelte-maplibre2",
-  "version": "0.0.1-dev.0",
+  "version": "0.0.1-dev.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natexvi/svelte-maplibre2.git"
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run package",

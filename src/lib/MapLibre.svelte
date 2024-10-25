@@ -118,5 +118,7 @@
 </script>
 
 <div {...rest} bind:this={container}>
-  {@render children?.()}
+  {#if loaded}
+    {@render children?.()}
+  {/if}
 </div>

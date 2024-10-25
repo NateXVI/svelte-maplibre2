@@ -82,11 +82,7 @@
   }
 
   $effect(() => {
-    if (ctx.map && ctx.map.isStyleLoaded()) {
-      init();
-    } else if (ctx.map) {
-      ctx.map.once('load', init);
-    }
+    init();
   });
 
   // Don't set the data again after we've just created it.

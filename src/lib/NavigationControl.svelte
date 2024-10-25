@@ -30,7 +30,7 @@
   };
 
   const cleanup = () => {
-    if (ctx.map?.isStyleLoaded() && control) {
+    if (ctx.map && control) {
       ctx.map.removeControl(control);
     }
     // cancel the init callback so multiple calls don't stack up
@@ -40,11 +40,7 @@
   $effect(() => {
     if (ctx.map && !control && !initialized) {
       initialized = true;
-      if (ctx.map.isStyleLoaded()) {
-        init();
-      } else {
-        ctx.map.once('load', init);
-      }
+      init();
     }
   });
 

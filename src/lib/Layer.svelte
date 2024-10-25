@@ -10,7 +10,7 @@
   import { createLayerContext, getId, mapContext, sourceContext } from './context.svelte.js';
   import type { Feature } from 'geojson';
   import flush from './flush.js';
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { onDestroy, type Snippet } from 'svelte';
   import type { LayerClickInfo } from './types.js';
   import { combineFilters, isClusterFilter } from './filters.js';
   import { diffApplier } from './compare.js';
@@ -18,9 +18,9 @@
   // TODO: add sourceLayer prop
 
   let {
+    children,
     id = getId('layer'),
     source: givenSource,
-    sourceLayer,
     beforeId,
     beforeLayerType,
     type,
@@ -35,13 +35,18 @@
     interactive = true,
     hoverCursor,
     eventsIfTopMost = false,
+    onclick,
+    ondblclick,
+    oncontextmenu,
+    onmouseenter,
+    onmousemove,
+    onmouseleave,
   }: {
+    children?: Snippet;
     id?: string;
     /** Set the source for this layer. This can be omitted when the Layer is created in the slot
      * of a source component. */
     source?: string;
-    /** When setting up a layer for a vector tile source, the source layer to which this layer corresponds. */
-    sourceLayer?: string;
     /** Draw this layer under another layer. This is only evaluated when the component is created. */
     beforeId?: string;
     /** Calculate beforeId so that this layer appears below all layers of a particular type.
@@ -63,16 +68,13 @@
     interactive?: boolean;
     hoverCursor?: string;
     eventsIfTopMost?: boolean;
+    onclick?: (e: LayerClickInfo) => void;
+    ondblclick?: (e: LayerClickInfo) => void;
+    oncontextmenu?: (e: LayerClickInfo) => void;
+    onmouseenter?: (e: LayerClickInfo) => void;
+    onmousemove?: (e: LayerClickInfo) => void;
+    onmouseleave?: (e: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>) => void;
   } = $props();
-
-  const dispatch = createEventDispatcher<{
-    click: LayerClickInfo;
-    dblclick: LayerClickInfo;
-    contextmenu: LayerClickInfo;
-    mouseenter: LayerClickInfo;
-    mousemove: LayerClickInfo;
-    mouseleave: Pick<LayerClickInfo, 'map' | 'layer' | 'source'>;
-  }>();
 
   let clusterFilter = $derived(isClusterFilter(applyToClusters));
   let layerFilter = $derived(combineFilters('all', clusterFilter, filter));
@@ -80,6 +82,7 @@
   let ctx = mapContext();
   let source = sourceContext();
   let layer = createLayerContext(id);
+  let created = $state(false);
 
   let actualMinZoom = $derived(minzoom ?? ctx.minzoom);
   let actualMaxZoom = $derived(maxzoom ?? ctx.maxzoom);
@@ -107,7 +110,17 @@
       features,
     };
 
-    dispatch(e.type as 'click' | 'dblclick' | 'contextmenu', eventData);
+    switch (e.type) {
+      case 'click':
+        onclick?.(eventData);
+        break;
+      case 'dblclick':
+        ondblclick?.(eventData);
+        break;
+      case 'contextmenu':
+        oncontextmenu?.(eventData);
+        break;
+    }
   }
 
   function handleMouseEnter(e: MapMouseEvent) {
@@ -136,7 +149,7 @@
       features,
     };
 
-    dispatch('mouseenter', data);
+    onmouseenter?.(data);
   }
 
   function handleMouseMove(e: MapMouseEvent & { features?: MapGeoJSONFeature[] }) {
@@ -184,7 +197,7 @@
       hovered = features[0] ?? null;
     }
 
-    dispatch('mousemove', {
+    onmousemove?.({
       event: e,
       map: ctx.map!,
       clusterId,
@@ -210,7 +223,7 @@
     //   hoverFeatureId = undefined;
     // }
 
-    dispatch('mouseleave', {
+    onmouseleave?.({
       map: ctx.map!,
       layer: layer.id,
       source: actualSource!,
@@ -258,6 +271,7 @@
     );
     if (beforeId) ctx.map.moveLayer(id, beforeId);
     first = true;
+    created = true;
 
     ctx.map.on('click', layer.id, handleClick);
     ctx.map.on('dblclick', layer.id, handleClick);
@@ -326,3 +340,9 @@
     }
   });
 </script>
+
+{#if created}
+  {#key id}
+    {@render children?.()}
+  {/key}
+{/if}

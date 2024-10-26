@@ -7,8 +7,8 @@
 {#snippet link(name: string, href: string)}
   <a
     {href}
-    class="w-full rounded-lg px-4 py-2 text-lg font-semibold transition-colors hover:bg-orange-300"
-    class:bg-orange-300={$page.url.pathname === href}>{name}</a
+    class="w-full rounded-lg px-4 py-2 text-lg font-semibold text-gray-900 transition-colors hover:bg-orange-100"
+    class:bg-orange-100={$page.url.pathname === href}>{name}</a
   >
 {/snippet}
 
@@ -17,7 +17,9 @@
     {@render link('Home', '/')}
     {@render link('GeoJSON', '/geojson')}
   </div>
-  <main class="w-full flex-1 bg-orange-100 p-5">
-    {@render children()}
-  </main>
+  <div class="flex w-full flex-1 bg-orange-100 p-5">
+    <main class="mx-auto flex max-w-4xl flex-1 flex-col gap-6">
+      {@render children()}
+    </main>
+  </div>
 </div>

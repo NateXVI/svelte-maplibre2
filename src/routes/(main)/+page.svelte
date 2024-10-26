@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Title from './Title.svelte';
   import DefaultMarker from '$lib/DefaultMarker.svelte';
   import FillLayer from '$lib/FillLayer.svelte';
   import { isTextLayer } from '$lib/filters.js';
@@ -7,7 +8,6 @@
   import MapLibre from '$lib/MapLibre.svelte';
   import Marker from '$lib/Marker.svelte';
   import NavigationControl from '$lib/NavigationControl.svelte';
-  import SymbolLayer from '$lib/SymbolLayer.svelte';
   import { defaultStyle } from '../../config.js';
   import manhattan from '../../data/manhattan.json';
   import maplibregl from 'maplibre-gl';
@@ -40,6 +40,8 @@
   }
 </script>
 
+<Title>Home</Title>
+
 <svelte:window
   onkeypress={(e) => {
     if (e.key === 't') {
@@ -50,40 +52,39 @@
   }}
 />
 
-<div class="mx-auto flex w-full max-w-5xl flex-col gap-6">
-  <div class="flex flex-col gap-2">
-    <MapLibre
-      class="map"
-      style={defaultStyle}
-      {center}
-      zoom={10.3}
-      bind:map
-      filterLayers={(l) => !isTextLayer(l, 'openmaptiles')}
-    >
-      {#if show}
-        <NavigationControl />
-        <GeoJson data={manhattan as any}>
-          <FillLayer {paint} onclick={console.log} />
-        </GeoJson>
-        <GeoJson
-          data={{
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                geometry: {
-                  type: 'Point',
-                  coordinates: center,
-                },
-                properties: {
-                  name: 'Manhattan',
-                },
+<div class="flex flex-col gap-2">
+  <MapLibre
+    class="map"
+    style={defaultStyle}
+    {center}
+    zoom={10.3}
+    bind:map
+    filterLayers={(l) => !isTextLayer(l, 'openmaptiles')}
+  >
+    {#if show}
+      <NavigationControl />
+      <GeoJson data={manhattan as any}>
+        <FillLayer {paint} onclick={console.log} />
+      </GeoJson>
+      <GeoJson
+        data={{
+          type: 'FeatureCollection',
+          features: [
+            {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: center,
               },
-            ],
-          }}
-        >
-          <Layer type="circle" paint={{ 'circle-radius': 10 }} />
-          <SymbolLayer
+              properties: {
+                name: 'Manhattan',
+              },
+            },
+          ],
+        }}
+      >
+        <Layer type="circle" paint={{ 'circle-radius': 10 }} />
+        <!-- <SymbolLayer
             paint={{
               'text-color': 'black',
             }}
@@ -91,26 +92,25 @@
               'text-field': '{name}',
               'text-size': 20,
             }}
-          />
-        </GeoJson>
-        <Marker draggable lngLat={center}>
-          <p>Manhattan</p>
-        </Marker>
-        <DefaultMarker lngLat={center} draggable />
-      {/if}
-    </MapLibre>
-    <div>
-      <span class="font-mono">{colors[currentColor]}</span>
-    </div>
+          /> -->
+      </GeoJson>
+      <Marker draggable lngLat={center}>
+        <p>Manhattan</p>
+      </Marker>
+      <DefaultMarker lngLat={center} draggable />
+    {/if}
+  </MapLibre>
+  <div>
+    <span class="font-mono">{colors[currentColor]}</span>
   </div>
-  <div class="flex justify-evenly">
-    <div class="flex flex-1 items-center gap-2">
-      <kbd>T</kbd>
-      <span class="font-semibold">{show ? 'Hide' : 'Show'}</span>
-    </div>
-    <div class="flex flex-1 items-center gap-2">
-      <kbd>C</kbd>
-      <span class="font-semibold">Change color</span>
-    </div>
+</div>
+<div class="flex justify-evenly">
+  <div class="flex flex-1 items-center gap-2">
+    <kbd>T</kbd>
+    <span class="font-semibold">{show ? 'Hide' : 'Show'}</span>
+  </div>
+  <div class="flex flex-1 items-center gap-2">
+    <kbd>C</kbd>
+    <span class="font-semibold">Change color</span>
   </div>
 </div>

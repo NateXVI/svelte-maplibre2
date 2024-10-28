@@ -1,5 +1,5 @@
 <script lang="ts">
-  import maplibre, { type LngLatLike, type PointLike, type Marker } from 'maplibre-gl';
+  import maplibre, { type LngLatLike, type PointLike } from 'maplibre-gl';
   import type { Feature } from 'geojson';
   import type { MarkerClickCallback, MarkerClickInfo } from './types.js';
   import { createMarkerContext, mapContext } from './context.svelte.js';

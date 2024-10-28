@@ -4,13 +4,14 @@
   import FillLayer from '$lib/FillLayer.svelte';
   import { isTextLayer } from '$lib/filters.js';
   import GeoJson from '$lib/GeoJSON.svelte';
-  import Layer from '$lib/Layer.svelte';
-  import MapLibre from '$lib/MapLibre.svelte';
   import Marker from '$lib/Marker.svelte';
   import NavigationControl from '$lib/NavigationControl.svelte';
   import { defaultStyle } from '../../config.js';
   import manhattan from '../../data/manhattan.json';
   import maplibregl from 'maplibre-gl';
+  import GeolocateControl from '$lib/GeolocateControl.svelte';
+  import FullScreenControl from '$lib/FullScreenControl.svelte';
+  import MapLibre from '$lib/MapLibre.svelte';
 
   let show = $state(true);
   let map = $state<maplibregl.Map | null>(null);
@@ -63,6 +64,8 @@
   >
     {#if show}
       <NavigationControl />
+      <GeolocateControl />
+      <FullScreenControl />
       <GeoJson data={manhattan as any}>
         <FillLayer {paint} onclick={console.log} />
       </GeoJson>
@@ -82,18 +85,7 @@
             },
           ],
         }}
-      >
-        <Layer type="circle" paint={{ 'circle-radius': 10 }} />
-        <!-- <SymbolLayer
-            paint={{
-              'text-color': 'black',
-            }}
-            layout={{
-              'text-field': '{name}',
-              'text-size': 20,
-            }}
-          /> -->
-      </GeoJson>
+      ></GeoJson>
       <Marker draggable lngLat={center}>
         <p>Manhattan</p>
       </Marker>

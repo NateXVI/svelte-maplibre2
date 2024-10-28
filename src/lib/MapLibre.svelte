@@ -1,10 +1,12 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import { createMapContext } from './context.svelte';
-  import { onMount } from 'svelte';
+  import { onMount, type Snippet } from 'svelte';
   import maplibregl from 'maplibre-gl';
   import flush from './flush.js';
   import 'maplibre-gl/dist/maplibre-gl.css';
+  import NavigationControl from './NavigationControl.svelte';
+  import GeolocateControl from './GeolocateControl.svelte';
+  import FullScreenControl from './FullScreenControl.svelte';
 
   let {
     children,
@@ -119,6 +121,11 @@
 
 <div {...rest} bind:this={container}>
   {#if loaded}
+    {#if standardControls}
+      <NavigationControl />
+      <GeolocateControl />
+      <FullScreenControl />
+    {/if}
     {@render children?.()}
   {/if}
 </div>

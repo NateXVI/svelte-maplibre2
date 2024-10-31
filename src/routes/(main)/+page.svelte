@@ -12,6 +12,7 @@
   import GeolocateControl from '$lib/GeolocateControl.svelte';
   import FullScreenControl from '$lib/FullScreenControl.svelte';
   import MapLibre from '$lib/MapLibre.svelte';
+  import SymbolLayer from '$lib/SymbolLayer.svelte';
 
   let show = $state(true);
   let map = $state<maplibregl.Map | null>(null);
@@ -85,11 +86,20 @@
             },
           ],
         }}
-      ></GeoJson>
-      <Marker draggable lngLat={center}>
-        <p>Manhattan</p>
-      </Marker>
-      <DefaultMarker lngLat={center} draggable />
+      >
+        <SymbolLayer
+          paint={{
+            'text-color': 'white',
+            'text-halo-color': '#111',
+            'text-halo-width': 1,
+          }}
+          layout={{
+            'text-field': '{name}',
+            'text-size': 30,
+            'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          }}
+        />
+      </GeoJson>
     {/if}
   </MapLibre>
   <div>

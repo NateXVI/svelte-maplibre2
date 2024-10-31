@@ -7,5 +7,5 @@ kbd {
 }
 
 .map {
-  @apply aspect-video w-full overflow-clip rounded-lg border-2 border-gray-700 drop-shadow-lg;
+  @apply aspect-[9/10] w-full overflow-clip rounded-lg border-2 border-gray-700 drop-shadow-lg sm:aspect-[13/9] md:aspect-[16/9];
 }
